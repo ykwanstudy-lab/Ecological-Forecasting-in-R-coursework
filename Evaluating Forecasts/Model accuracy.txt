@@ -1,0 +1,107 @@
+> accuracy(arima_forecast,NDVI_test)
+                       ME       RMSE        MAE       MPE     MAPE      MASE        ACF1 Theil's U
+Training set 6.021061e-05 0.04051352 0.02506978 -3.772485 13.23879 0.5009513 -0.01299506        NA
+Test set     7.030479e-03 0.05960220 0.04309102 -4.019585 21.85463 0.8610567  0.72652570  1.285758
+
+> accuracy(arima_seasonal_forecast,NDVI_test)
+                       ME       RMSE        MAE        MPE     MAPE      MASE       ACF1 Theil's U
+Training set 6.592624e-05 0.03730589 0.02375628 -3.0665748 12.53336 0.4747046 0.01175268        NA
+Test set     1.149104e-02 0.05340707 0.03708104 -0.1204966 18.04711 0.7409637 0.70200405  1.109571
+
+
+#Observed data points within 80% interval
+> in_interval = NDVI_test > arima_forecast$lower[,1] & NDVI_test < arima_forecast$upper[,1] #Column 1 = 80% interval
+ > in_interval
+       Jan   Feb   Mar   Apr   May   Jun   Jul   Aug   Sep   Oct   Nov   Dec
+2011                                                                    TRUE
+2012  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+2013  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE
+2014  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE FALSE FALSE  TRUE      
+> length(in_interval[in_interval==TRUE])/length(in_interval)
+[1] 0.8888889 
+
+> seasonal_in_interval = NDVI_test > arima_seasonal_forecast$lower[,1] & NDVI_test < arima_seasonal_forecast$upper[,1]
+> seasonal_in_interval
+       Jan   Feb   Mar   Apr   May   Jun   Jul   Aug   Sep   Oct   Nov   Dec
+2011                                                                    TRUE
+2012  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+2013  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE
+2014  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE      
+> length(seasonal_in_interval[seasonal_in_interval==TRUE])/length(seasonal_in_interval)
+[1] 0.8333333 #Closer estimate to 80% interval
+
+#Continuous Rank Probability Score
+   .model    month .type winkler    crps     mae
+   <chr>     <mth> <chr>   <dbl>   <dbl>   <dbl>
+ 1 arima  2011 Dec Test   0.0969 0.00892 0.00294
+ 2 arima  2012 Jan Test   0.124  0.0114  0.00128
+ 3 arima  2012 Feb Test   0.134  0.0179  0.0276 
+ 4 arima  2012 Mar Test   0.227  0.0507  0.0773 
+ 5 arima  2012 Apr Test   0.136  0.0142  0.0153 
+ 6 arima  2012 May Test   0.137  0.0137  0.0127 
+ 7 arima  2012 Jun Test   0.137  0.0140  0.0144 
+ 8 arima  2012 Jul Test   0.138  0.0190  0.0297 
+ 9 arima  2012 Aug Test   0.138  0.0162  0.0221 
+10 arima  2012 Sep Test   0.138  0.0135  0.0108 
+11 arima  2012 Oct Test   0.138  0.0154  0.0195 
+12 arima  2012 Nov Test   0.138  0.0169  0.0243 
+13 arima  2012 Dec Test   0.141  0.0141  0.0133 
+14 arima  2013 Jan Test   0.142  0.0152  0.0178 
+15 arima  2013 Feb Test   0.143  0.0172  0.0243 
+16 arima  2013 Mar Test   0.143  0.0187  0.0286 
+17 arima  2013 Apr Test   0.143  0.0224  0.0368 
+18 arima  2013 May Test   0.143  0.0228  0.0376 
+19 arima  2013 Jun Test   0.143  0.0217  0.0355 
+20 arima  2013 Jul Test   0.143  0.0149  0.0163 
+21 arima  2013 Aug Test   0.143  0.0206  0.0329 
+22 arima  2013 Sep Test   0.233  0.0528  0.0805 
+23 arima  2013 Oct Test   0.143  0.0253  0.0424 
+24 arima  2013 Nov Test   0.143  0.0134  0.00691
+25 arima  2013 Dec Test   0.146  0.0135  0.00465
+26 arima  2014 Jan Test   0.148  0.0166  0.0214 
+27 arima  2014 Feb Test   0.149  0.0181  0.0259 
+28 arima  2014 Mar Test   0.149  0.0167  0.0214 
+29 arima  2014 Apr Test   0.149  0.0196  0.0300 
+30 arima  2014 May Test   0.149  0.0222  0.0360 
+31 arima  2014 Jun Test   0.149  0.0209  0.0331 
+32 arima  2014 Jul Test   0.149  0.0154  0.0164 
+33 arima  2014 Aug Test   1.15   0.142   0.174  
+34 arima  2014 Sep Test   0.923  0.119   0.152  
+35 arima  2014 Oct Test   0.547  0.0825  0.114  
+36 arima  2014 Nov Test   0.149  0.0472  0.0745 
+37 ma2    2011 Dec Test   0.106  0.0120  0.0158 
+38 ma2    2012 Jan Test   0.134  0.0188  0.0297 
+39 ma2    2012 Feb Test   0.138  0.0128  0.00564
+40 ma2    2012 Mar Test   0.138  0.0294  0.0492 
+41 ma2    2012 Apr Test   0.138  0.0130  0.00753
+42 ma2    2012 May Test   0.138  0.0164  0.0228 
+43 ma2    2012 Jun Test   0.138  0.0171  0.0250 
+44 ma2    2012 Jul Test   0.138  0.0159  0.0212 
+45 ma2    2012 Aug Test   0.138  0.0134  0.0102 
+46 ma2    2012 Sep Test   0.138  0.0210  0.0342 
+47 ma2    2012 Oct Test   0.138  0.0134  0.0103 
+48 ma2    2012 Nov Test   0.138  0.0195  0.0310 
+49 ma2    2012 Dec Test   0.138  0.0172  0.0251 
+50 ma2    2013 Jan Test   0.138  0.0210  0.0344 
+51 ma2    2013 Feb Test   0.138  0.0251  0.0422 
+52 ma2    2013 Mar Test   0.138  0.0274  0.0460 
+53 ma2    2013 Apr Test   0.138  0.0299  0.0500 
+54 ma2    2013 May Test   0.138  0.0304  0.0508 
+55 ma2    2013 Jun Test   0.138  0.0295  0.0494 
+56 ma2    2013 Jul Test   0.138  0.0127  0.00413
+57 ma2    2013 Aug Test   0.138  0.0404  0.0648 
+58 ma2    2013 Sep Test   0.482  0.0741  0.103  
+59 ma2    2013 Oct Test   0.138  0.0315  0.0524 
+60 ma2    2013 Nov Test   0.138  0.0126  0.00174
+61 ma2    2013 Dec Test   0.138  0.0142  0.0148 
+62 ma2    2014 Jan Test   0.138  0.0208  0.0339 
+63 ma2    2014 Feb Test   0.138  0.0232  0.0386 
+64 ma2    2014 Mar Test   0.138  0.0203  0.0328 
+65 ma2    2014 Apr Test   0.138  0.0216  0.0356 
+66 ma2    2014 May Test   0.138  0.0251  0.0422 
+67 ma2    2014 Jun Test   0.138  0.0237  0.0395 
+68 ma2    2014 Jul Test   0.138  0.0135  0.0109 
+69 ma2    2014 Aug Test   1.34   0.159   0.189  
+70 ma2    2014 Sep Test   1.07   0.132   0.162  
+71 ma2    2014 Oct Test   0.631  0.0885  0.118  
+72 ma2    2014 Nov Test   0.159  0.0454  0.0711 
